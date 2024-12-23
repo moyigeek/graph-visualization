@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Package Dependencies Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        #container {
+            display: flex;
+            height: 100vh;
+        }
+        #graph {
+            flex: 1;
+            height: 100%;
+        }
+        #controls {
+            width: 200px;
+            padding: 20px;
+        }
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+        input[type=range] {
+            writing-mode: bt-lr; /* IE */
+            -webkit-appearance: slider-vertical; /* WebKit */
+            width: 8px;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="graph"></div>
+        <div id="controls">
+            <div class="slider-container">
+                <label for="minCount">Minimum Count: <span id="sliderValue">1000</span></label>
+                <input type="range" id="minCount" min="10" max="2000" value="1000">
+            </div>
+            <div class="dropdown-container">
+                <label for="viewSelect">Select View:</label>
+                <select id="viewSelect">
+                    <option value="1">Arch</option>
+                    <option value="2">Debian</option>
+                    <option value="3">Gentoo</option>
+                    <option value="4">Homebrew</option>
+                    <option value="5">Nix</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <script src="draw.js"></script>
+</body>
+</html>
