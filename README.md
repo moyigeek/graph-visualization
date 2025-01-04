@@ -12,7 +12,7 @@ go mod tidy
 
 set config with your own database
 ```shell
-cp config.json.example config.json
+cp config.toml.example config.toml
 ```
 
 ### run
