@@ -1,3 +1,5 @@
 .vscode
 graph_server/.idea
+graph_server/config.toml
+graph_server/bin
 server

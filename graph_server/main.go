@@ -8,8 +8,20 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/BurntSushi/toml"
 	_ "github.com/lib/pq"
 )
+
+type Config struct {
+	Database struct {
+		Host     string `toml:"host"`
+		Port     int    `toml:"port"`
+		User     string `toml:"user"`
+		Password string `toml:"password"`
+		DBName   string `toml:"dbname"`
+		SSLMode  string `toml:"sslmode"`
+	} `toml:"database"`
+}
 
 type Node struct {
 	FromPackage string `json:"from_package"`
@@ -18,7 +30,13 @@ type Node struct {
 	ToDepends   int    `json:"to_depends"`
 }
 
+var config Config
+
 func main() {
+	if _, err := toml.DecodeFile("config.toml", &config); err != nil {
+		log.Fatalf("Error reading config file: %v", err)
+	}
+
 	http.HandleFunc("/nodes", corsMiddleware(nodesHandler))
 	log.Println("Server started on :5000")
 	log.Fatal(http.ListenAndServe(":5000", nil))
@@ -40,7 +58,6 @@ func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
 
 func nodesHandler(w http.ResponseWriter, r *http.Request) {
 	minCount, err := strconv.Atoi(r.URL.Query().Get("min_count"))
-
 	if err != nil {
 		http.Error(w, "Invalid min_count parameter", http.StatusBadRequest)
 		return
@@ -69,7 +86,8 @@ func nodesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getNodesWithMinCount(minCount int, view int) ([]Node, error) {
-	dsn := "postgres://postgres:TSE9%2FdM78kyOsioH@222.20.126.219:5432/criticality_score?sslmode=disable"
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s",
+		config.Database.User, config.Database.Password, config.Database.Host, config.Database.Port, config.Database.DBName, config.Database.SSLMode)
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		return nil, err
