@@ -10,6 +10,11 @@ cd  graph_server
 go mod tidy
 ```
 
+set config with your own database
+```shell
+cp config.json.example config.json
+```
+
 ### run
 
 ```shell
